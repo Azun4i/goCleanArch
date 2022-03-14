@@ -18,8 +18,8 @@ func Start(config *Config) error {
 
 	repo := repository.NewSqlstore(db)
 
-	_ = newserver(repo)                              //////// создаем сервер с роутерами
-	return http.ListenAndServe(config.BindAddr, nil) /// случаем сервер
+	s := newserver(repo)                           //////// создаем сервер с роутерами
+	return http.ListenAndServe(config.BindAddr, s) /// случаем сервер
 }
 
 //newDB
