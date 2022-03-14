@@ -7,14 +7,16 @@ import (
 
 type server struct {
 	mux   *mux.Router
-	store repository.Store
+	store repository.Repository
 }
 
-func newserver(store repository.Store) *server {
+func newserver(store repository.Repository) *server {
 	s := &server{
 		store: store,
 		mux:   mux.NewRouter(),
 	}
+
+	///ROUTERI.............
 
 	return s
 }

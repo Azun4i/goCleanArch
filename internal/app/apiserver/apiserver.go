@@ -8,22 +8,23 @@ import (
 	"net/http"
 )
 
-//Start ...
+//Start app
 func Start(config *Config) error {
-	db, err := newDbConect(config.DatabaseUrl)
+	db, err := newDB(config.DatabaseUrl)
 	if err != nil {
 		log.Fatal("can't ")
 	}
 	defer db.Close()
 
-	store := repository.New(db)
+	repo := repository.NewSqlstore(db)
 
-	s := newserver(*store)
-	return http.ListenAndServe(config.BindAddr, nil)
+	_ = newserver(repo)                              //////// создаем сервер с роутерами
+	return http.ListenAndServe(config.BindAddr, nil) /// случаем сервер
 }
 
-//newDbConect get connect to database or err
-func newDbConect(DatabaseUrl string) (db *sql.DB, err error) {
+//newDB
+// get connect to database or err
+func newDB(DatabaseUrl string) (db *sql.DB, err error) {
 
 	db, err = sql.Open("postgres", DatabaseUrl)
 	if err != nil {
