@@ -12,13 +12,15 @@ import (
 func Start(config *Config) error {
 	db, err := newDB(config.DatabaseUrl)
 	if err != nil {
-		log.Fatal("can't ")
+		log.Fatal("can't ", err)
 	}
 	defer db.Close()
 
 	repo := repository.NewSqlstore(db)
 
-	s := newserver(repo)                           //////// создаем сервер с роутерами
+	s := newserver(repo) //////// создаем сервер с роутерами
+
+	log.Println(config.BindAddr)
 	return http.ListenAndServe(config.BindAddr, s) /// случаем сервер
 }
 

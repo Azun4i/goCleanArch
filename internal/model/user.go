@@ -1,11 +1,11 @@
 package model
 
 type User struct {
-	ID        int
+	ID        string
 	Firstname string
 	Lastname  string
 	Email     string
-	Age       uint
+	Age       int
 }
 
 func NewUser() *User {
