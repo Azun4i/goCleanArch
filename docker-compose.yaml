@@ -1,9 +1,9 @@
 postgres:
   image: postgres:12
   environment:
-    POSTGRES_USER: user
-    POSTGRES_PASSWORD: passwd
-    POSTGRES_DB: fintech
+    POSTGRES_USER: azunai
+    POSTGRES_PASSWORD: password
+    POSTGRES_DB: apicl
 #    PGDATA: /data/postgres
   volumes:
     - ./migration/20220114153446_create_author.up.sql:/docker-entrypoint-initdb.d/init.sql
@@ -14,3 +14,5 @@ postgres:
 # поднять контейнер docker-compose up -d (запустился и светрнулся)
 # остановить конейнер docker-compose stop
 # остановить конейнер и удалить образ  docker-compose down
+
+#для тестов http POST http://localhost:9000/user firstname=user lastname=user email=test5@test.com age=18

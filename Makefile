@@ -1,15 +1,16 @@
-.PHOHY: build, clear
+.PHOHY: build, clear, up
 
 build:
 	go build -v ./cmd/apiserver
 
-
-.PHONY: test
-test :
-	go test -v -race -timeout 30s ./...
-
-.PHONY: clean
-clean:
+clear:
 	rm -f apiserver
+up:
+	docker-compose up -d
+stop:
+	docker-compose stop
+
+drop:
+	docker-compose drop
 
 .DEFAULT_GOAL := build

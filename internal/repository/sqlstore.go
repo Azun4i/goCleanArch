@@ -4,13 +4,13 @@ import (
 	"database/sql"
 	"fmt"
 	"goCleanArch/internal/model"
-	"log"
 )
 
 type Sqlstore struct {
 	db *sql.DB
 }
 
+//NewSqlstore ...
 func NewSqlstore(db *sql.DB) Repository {
 	return &Sqlstore{
 		db: db,
@@ -18,7 +18,7 @@ func NewSqlstore(db *sql.DB) Repository {
 }
 
 //Create
-//inset model in to database or get err
+//INSERT model in to database or get err
 func (s Sqlstore) Create(u *model.User) error {
 	if _, err := s.db.Query("INSERT INTO authors (uuid, firstname, lastname,email, age) VALUES ($1,$2,$3,$4,$5)",
 		u.ID, u.Firstname, u.Lastname, u.Email, u.Age,
@@ -28,6 +28,7 @@ func (s Sqlstore) Create(u *model.User) error {
 	return nil
 }
 
+//Delete user by id or get err
 func (s Sqlstore) Delete(id string) error {
 	del, err := s.db.Prepare("DELETE FROM authors WHERE uuid=$1")
 	if err != nil {
@@ -38,8 +39,8 @@ func (s Sqlstore) Delete(id string) error {
 	return nil
 }
 
+//Edit user or get err
 func (s Sqlstore) Edit(u *model.User) error {
-	log.Println(u.ID, u.Firstname, u.Email, u.Age)
 	if _, err := s.db.Exec("UPDATE authors SET firstname=$1, lastname=$2,email=$3, age=$4 WHERE uuid=$5",
 		u.Firstname, u.Lastname, u, u.Email, u.Age,
 		u.ID,
@@ -49,6 +50,7 @@ func (s Sqlstore) Edit(u *model.User) error {
 	return nil
 }
 
+//FindById ...
 func (s Sqlstore) FindById(id string) (*model.User, error) {
 	u := &model.User{}
 	fmt.Println(id)

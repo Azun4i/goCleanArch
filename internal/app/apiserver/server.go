@@ -33,6 +33,7 @@ func (s *server) configureRouter() {
 	s.router.HandleFunc("/user", s.handlCreateuser()).Methods("POST")      // work
 	s.router.HandleFunc("/user/{id}", s.handlGetUserbyId()).Methods("GET") // work
 	s.router.HandleFunc("/user/{id}", s.handlEditUser()).Methods("PUT")
+	s.router.HandleFunc("/user/{id}", s.handlDeleteUser()).Methods("DELETE")
 }
 
 //handlCreateuser
@@ -93,6 +94,7 @@ func (s *server) handlGetUserbyId() http.HandlerFunc {
 	}
 }
 
+// handlEditUser edit user by id
 func (s *server) handlEditUser() http.HandlerFunc {
 	type tmpu struct {
 		ID        string `json:"id"`
@@ -128,6 +130,24 @@ func (s *server) handlEditUser() http.HandlerFunc {
 			s.error(w, r, http.StatusNotFound, err)
 		}
 
+		s.respond(w, r, http.StatusOK, nil)
+	}
+}
+
+//handlDeleteUser delete user by id
+func (s *server) handlDeleteUser() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		p := mux.Vars(r)
+		id, ok := p["id"]
+		fmt.Println(id)
+		if !ok {
+			s.error(w, r, http.StatusBadRequest, nil)
+		}
+
+		if err := s.store.Delete(id); err != nil {
+			s.error(w, r, http.StatusNoContent, err)
+		}
 		s.respond(w, r, http.StatusOK, nil)
 	}
 }
