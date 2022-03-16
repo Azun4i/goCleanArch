@@ -12,7 +12,7 @@
 
 # миграции
 Чтобы создать таблиц sql :
-	migrate create -ext sql -dir migration create_user
+	migrate create -ext sql -dir migration название миграции
 	
 Будут созданы 2 slq файла в которых мы должны прописать поля для базы дынных
 
