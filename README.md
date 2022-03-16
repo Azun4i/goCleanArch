@@ -10,7 +10,7 @@
 Запустить сервис: команда make
 
 
-
+# миграции
 Чтобы создать таблиц sql :
 	migrate create -ext sql -dir migration create_user
 	
