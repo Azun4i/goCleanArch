@@ -1,4 +1,4 @@
-.PHOHY: build, clear, up
+.PHOHY: build, clear, up,stop,down
 
 build:
 	go build -v ./cmd/apiserver
@@ -10,7 +10,11 @@ up:
 stop:
 	docker-compose stop
 
-drop:
-	docker-compose drop
+down:
+	docker-compose down
 
+
+.PHONY: test
+test:
+	go test -v -race -timeout 30s ./...
 .DEFAULT_GOAL := build

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "github.com/lib/pq"
 	"goCleanArch/internal/repository"
+	"goCleanArch/internal/usecases"
 	"log"
 	"net/http"
 )
@@ -19,8 +20,11 @@ func Start(config *Config) error {
 	// получаем репозитории
 	repo := repository.NewSqlstore(db)
 
-	// сервис с репозиторием и обработкой запросов
-	s := newserver(repo)
+	// получаем в use case repository
+	us := usecases.NewUseCase(repo)
+
+	// сервис получает usecase
+	s := Newserver(us)
 
 	log.Println(config.BindAddr)
 	return http.ListenAndServe(config.BindAddr, s) /// случаем сервер

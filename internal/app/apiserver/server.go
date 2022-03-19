@@ -2,27 +2,37 @@ package apiserver
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"goCleanArch/internal/model"
-	"goCleanArch/internal/repository"
+	"goCleanArch/internal/usecases"
 	"net/http"
 	"strconv"
 )
 
 type server struct {
 	router *mux.Router
-	store  repository.Repository
+	//store  repository.Repository
+	logic usecases.UseCaseLogic
+}
+
+type tmpu struct {
+	ID        string `json:"id"`
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Email     string `json:"email"`
+	Age       string `json:"age"`
 }
 
 func (s *server) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	s.router.ServeHTTP(writer, request)
 }
 
-func newserver(store repository.Repository) *server {
+func Newserver(logic usecases.UseCaseLogic) *server {
 	s := &server{
-		store:  store,
+		logic:  logic,
 		router: mux.NewRouter(),
 	}
 	s.configureRouter()
@@ -39,30 +49,20 @@ func (s *server) configureRouter() {
 //handlCreateuser
 // create user
 func (s *server) handlCreateuser() http.HandlerFunc {
-
-	type tmpu struct {
-		ID        string `json:"id"`
-		Firstname string `json:"firstname"`
-		Lastname  string `json:"lastname"`
-		Email     string `json:"email"`
-		Age       string `json:"age"`
-	}
-
+	tmpr := &tmpu{}
 	return func(w http.ResponseWriter, r *http.Request) {
-		tmpr := &tmpu{}
+
 		if err := json.NewDecoder(r.Body).Decode(tmpr); err != nil {
 			s.error(w, r, http.StatusBadRequest, err)
 		}
-		fmt.Printf("%#v\n", tmpr)
+
 		tmp := model.NewUser()
 		tmp.ID = uuid.New().String()
 		tmp.Lastname = tmpr.Lastname
 		tmp.Firstname = tmpr.Firstname
 		tmp.Email = tmpr.Email
 		tmp.Age, _ = strconv.Atoi(tmpr.Age)
-
-		fmt.Printf("%#v\n", tmp)
-		if err := s.store.Create(tmp); err != nil {
+		if err := s.logic.Create(tmp); err != nil {
 			s.error(w, r, http.StatusUnprocessableEntity, err)
 		}
 		s.respond(w, r, http.StatusOK, tmp)
@@ -83,12 +83,12 @@ func (s *server) handlGetUserbyId() http.HandlerFunc {
 		tmp.ID, ok = p["id"]
 		fmt.Println(tmp.ID)
 		if !ok {
-			s.error(w, r, http.StatusNoContent, nil)
+			s.error(w, r, http.StatusBadRequest, nil)
 		}
 
-		u, err := s.store.FindById(tmp.ID)
+		u, err := s.logic.FindById(tmp.ID)
 		if err != nil {
-			s.error(w, r, http.StatusBadRequest, nil)
+			s.error(w, r, http.StatusNoContent, errors.New("user not found"))
 		}
 		s.respond(w, r, http.StatusOK, u)
 	}
@@ -96,13 +96,6 @@ func (s *server) handlGetUserbyId() http.HandlerFunc {
 
 // handlEditUser edit user by id
 func (s *server) handlEditUser() http.HandlerFunc {
-	type tmpu struct {
-		ID        string `json:"id"`
-		Firstname string `json:"firstname"`
-		Lastname  string `json:"lastname"`
-		Email     string `json:"email"`
-		Age       string `json:"age"`
-	}
 
 	tmpU := &tmpu{}
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -125,7 +118,7 @@ func (s *server) handlEditUser() http.HandlerFunc {
 		u.Email = tmpU.Email
 		u.Age, _ = strconv.Atoi(tmpU.Age)
 
-		err := s.store.Edit(u)
+		err := s.logic.Edit(u)
 		if err != nil {
 			s.error(w, r, http.StatusNotFound, err)
 		}
@@ -142,10 +135,10 @@ func (s *server) handlDeleteUser() http.HandlerFunc {
 		id, ok := p["id"]
 		fmt.Println(id)
 		if !ok {
-			s.error(w, r, http.StatusBadRequest, nil)
+			s.error(w, r, http.StatusBadRequest, errors.New("PPC"))
 		}
 
-		if err := s.store.Delete(id); err != nil {
+		if err := s.logic.Delete(id); err != nil {
 			s.error(w, r, http.StatusNoContent, err)
 		}
 		s.respond(w, r, http.StatusOK, nil)
