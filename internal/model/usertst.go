@@ -1,6 +1,8 @@
 package model
 
-import "testing"
+import (
+	"testing"
+)
 
 func Testuser(t *testing.T) *User {
 	return &User{
@@ -8,6 +10,6 @@ func Testuser(t *testing.T) *User {
 		Firstname: "ivan",
 		Lastname:  "Ivanov",
 		Email:     "user@test.com",
-		Age:       18,
+		Age:       "18",
 	}
 }

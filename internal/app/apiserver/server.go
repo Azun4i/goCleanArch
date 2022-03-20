@@ -4,12 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"goCleanArch/internal/model"
 	"goCleanArch/internal/usecases"
 	"net/http"
-	"strconv"
 )
 
 type server struct {
@@ -40,8 +38,8 @@ func Newserver(logic usecases.UseCaseLogic) *server {
 }
 
 func (s *server) configureRouter() {
-	s.router.HandleFunc("/user", s.handlCreateuser()).Methods("POST")      // work
-	s.router.HandleFunc("/user/{id}", s.handlGetUserbyId()).Methods("GET") // work
+	s.router.HandleFunc("/user", s.handlCreateuser()).Methods("POST")
+	s.router.HandleFunc("/user/{id}", s.handlGetUserbyId()).Methods("GET")
 	s.router.HandleFunc("/user/{id}", s.handlEditUser()).Methods("PUT")
 	s.router.HandleFunc("/user/{id}", s.handlDeleteUser()).Methods("DELETE")
 }
@@ -55,13 +53,12 @@ func (s *server) handlCreateuser() http.HandlerFunc {
 		if err := json.NewDecoder(r.Body).Decode(tmpr); err != nil {
 			s.error(w, r, http.StatusBadRequest, err)
 		}
-
 		tmp := model.NewUser()
-		tmp.ID = uuid.New().String()
+		//tmp.ID = "1" // tests
 		tmp.Lastname = tmpr.Lastname
 		tmp.Firstname = tmpr.Firstname
 		tmp.Email = tmpr.Email
-		tmp.Age, _ = strconv.Atoi(tmpr.Age)
+		tmp.Age = tmpr.Age
 		if err := s.logic.Create(tmp); err != nil {
 			s.error(w, r, http.StatusUnprocessableEntity, err)
 		}
@@ -116,7 +113,7 @@ func (s *server) handlEditUser() http.HandlerFunc {
 		u.Firstname = tmpU.Firstname
 		u.Lastname = tmpU.Lastname
 		u.Email = tmpU.Email
-		u.Age, _ = strconv.Atoi(tmpU.Age)
+		u.Age = tmpU.Age
 
 		err := s.logic.Edit(u)
 		if err != nil {

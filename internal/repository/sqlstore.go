@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 	"goCleanArch/internal/model"
 )
 
@@ -53,7 +52,6 @@ func (s Sqlstore) Edit(u *model.User) error {
 //FindById ...
 func (s Sqlstore) FindById(id string) (*model.User, error) {
 	u := &model.User{}
-	fmt.Println(id)
 	if err := s.db.QueryRow("SELECT uuid, firstname, lastname, email, age FROM authors WHERE uuid=$1", id).Scan(
 		&u.ID,
 		&u.Firstname,

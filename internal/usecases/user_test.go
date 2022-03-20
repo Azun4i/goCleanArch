@@ -25,19 +25,24 @@ func TestUser_Validate(t *testing.T) {
 		u       *model.User
 		isValid bool
 	}{
+		//{
+		//	name:    "valid",
+		//	u:       model.Testuser(t),
+		//	isValid: true,
+		//},
+		//{
+		//	name:    "empty email",
+		//	u:       &model.User{ID: "2", Firstname: "test", Lastname: "testov", Email: ""},
+		//	isValid: false,
+		//},
+		//{
+		//	name:    "invalid email",
+		//	u:       &model.User{ID: "2", Firstname: "test", Lastname: "testov", Email: "123fxv"},
+		//	isValid: false,
+		//},
 		{
-			name:    "valid",
-			u:       model.Testuser(t),
-			isValid: true,
-		},
-		{
-			name:    "empty email",
-			u:       &model.User{ID: "2", Firstname: "test", Lastname: "testov", Email: ""},
-			isValid: false,
-		},
-		{
-			name:    "invalid email",
-			u:       &model.User{ID: "2", Firstname: "test", Lastname: "testov", Email: "123fxv"},
+			name:    "too yuong",
+			u:       &model.User{ID: "2", Firstname: "test", Lastname: "testov", Email: "123fxv", Age: "1"},
 			isValid: false,
 		},
 	}
@@ -49,7 +54,6 @@ func TestUser_Validate(t *testing.T) {
 			} else {
 				assert.Error(t, us.Validation(tc.u))
 			}
-
 		})
 	}
 }

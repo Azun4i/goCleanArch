@@ -6,10 +6,12 @@ import (
 	"github.com/go-ozzo/ozzo-validation/is"
 	"goCleanArch/internal/model"
 	"goCleanArch/internal/repository"
+	"strconv"
 )
 
 type UseCase struct {
 	store repository.Repository
+	idcnt int
 }
 
 type UseCaseLogic interface {
@@ -17,22 +19,26 @@ type UseCaseLogic interface {
 	Delete(id string) error
 	Edit(u *model.User) error
 	FindById(id string) (*model.User, error)
-	Validation(u *model.User) error //// узанать
+	Validation(u *model.User) error //// узнать
 }
 
 //NewUseCase return interfase of UseCaseLogic
 func NewUseCase(store repository.Repository) UseCaseLogic {
-	return &UseCase{store: store}
+	return &UseCase{
+		store: store,
+		idcnt: 1,
+	}
 }
 
 func (c *UseCase) Create(u *model.User) error {
 	if err := c.Validation(u); err != nil {
 		return err
 	}
-
+	u.ID = strconv.Itoa(c.idcnt)
 	if err := c.store.Create(u); err != nil {
 		return err
 	}
+	c.idcnt++
 	return nil
 }
 
@@ -79,8 +85,9 @@ func (c *UseCase) Validation(u *model.User) error {
 	return nil
 }
 
-func (c *UseCase) validationAge(age int) error {
-	if age < 18 {
+func (c *UseCase) validationAge(age string) error {
+	i, _ := strconv.Atoi(age)
+	if i < 18 {
 		return errors.New("too young")
 	}
 	return nil

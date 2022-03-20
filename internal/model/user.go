@@ -5,7 +5,7 @@ type User struct {
 	Firstname string
 	Lastname  string
 	Email     string
-	Age       int
+	Age       string
 }
 
 func NewUser() *User {
