@@ -23,6 +23,6 @@ test:
 	go test -v -race -timeout 30s ./...
 
 mock:
-	mockgen -package mockdb -destination internal/repository/mock/mockdb.go goCleanArch/internal/repository Repository
+	mockgen -package mockdb -destination internal/usecases/mock/mockdb.go goCleanArch/internal/usecases UseCaseLogic
 
 .DEFAULT_GOAL := build

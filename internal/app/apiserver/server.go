@@ -59,7 +59,8 @@ func (s *server) handlCreateuser() http.HandlerFunc {
 		tmp.Firstname = tmpr.Firstname
 		tmp.Email = tmpr.Email
 		tmp.Age = tmpr.Age
-		if err := s.logic.Create(tmp); err != nil {
+		err := s.logic.Create(tmp)
+		if err != nil {
 			s.error(w, r, http.StatusUnprocessableEntity, err)
 		}
 		s.respond(w, r, http.StatusOK, tmp)
