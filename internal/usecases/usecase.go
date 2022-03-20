@@ -43,6 +43,9 @@ func (c *UseCase) Create(u *model.User) error {
 }
 
 func (c *UseCase) Delete(id string) error {
+	if _, err := strconv.Atoi(id); err != nil {
+		return err
+	}
 
 	if err := c.store.Delete(id); err != nil {
 		return err

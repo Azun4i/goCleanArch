@@ -54,7 +54,7 @@ func (s *server) handlCreateuser() http.HandlerFunc {
 			s.error(w, r, http.StatusBadRequest, err)
 		}
 		tmp := model.NewUser()
-		//tmp.ID = "1" // tests
+		tmp.ID = "1" // tests
 		tmp.Lastname = tmpr.Lastname
 		tmp.Firstname = tmpr.Firstname
 		tmp.Email = tmpr.Email
