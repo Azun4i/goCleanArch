@@ -53,12 +53,14 @@ func (s *server) handlCreateuser() http.HandlerFunc {
 		if err := json.NewDecoder(r.Body).Decode(tmpr); err != nil {
 			s.error(w, r, http.StatusBadRequest, err)
 		}
+
 		tmp := model.NewUser()
-		tmp.ID = "1" // tests
-		tmp.Lastname = tmpr.Lastname
-		tmp.Firstname = tmpr.Firstname
-		tmp.Email = tmpr.Email
-		tmp.Age = tmpr.Age
+		tmp = (*model.User)(tmpr)
+		//tmp.ID = "1" // tests
+		//tmp.Lastname = tmpr.Lastname
+		//tmp.Firstname = tmpr.Firstname
+		//tmp.Email = tmpr.Email
+		//tmp.Age = tmpr.Age
 		err := s.logic.Create(tmp)
 		if err != nil {
 			s.error(w, r, http.StatusUnprocessableEntity, err)
